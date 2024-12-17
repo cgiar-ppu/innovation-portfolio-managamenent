@@ -34,12 +34,354 @@ types = get_unique_values_with_all(df, 'Type')
 genders = get_unique_values_with_all(df, 'Gender level')
 readiness_levels = get_unique_values_with_all(df, 'Readiness level')
 partners = get_unique_values_with_all(df, 'Partners')
-centers = get_unique_values_with_all(df, 'Primary center')
 
-primary_centers = get_unique_values(df, 'Primary center')
-impact_areas = get_unique_values(df, 'Impact areas')
-countries = get_unique_values(df, 'Countries')
-regions = get_unique_values(df, 'Regions')
+# Hardcoded list for CGIAR-centres
+primary_centers = [
+    "AfricaRice",
+    "Bioversity (Alliance)",
+    "CIAT (Alliance)",
+    "CIFOR",
+    "CIMMYT",
+    "ICARDA",
+    "ICRISAT",
+    "IFPRI",
+    "IITA",
+    "ILRI",
+    "CIP",
+    "IRRI",
+    "IWMI",
+    "ICRAF",
+    "WorldFish"
+]
+
+# Hardcoded thematic areas as requested
+thematic_areas_options = [
+    "Climate adaptation & mitigation",
+    "Environmental health & biodiversity",
+    "Gender equality, youth & social inclusion",
+    "Nutrition, health & food security",
+    "Poverty reduction, livelihoods & jobs"
+]
+
+# Country options (Step 1 and Step 3)
+country_options = [
+"Andorra",
+"The United Arab Emirates",
+"Anguilla",
+"Austria",
+"Antigua and Barbuda",
+"Australia",
+"Afghanistan",
+"Azerbaijan",
+"Aruba",
+"Albania",
+"Armenia",
+"Argentina",
+"American Samoa",
+"Bosnia and Herzegovina",
+"Barbados",
+"Bangladesh",
+"Belgium",
+"Burkina Faso",
+"Angola",
+"Brazil",
+"Bahamas",
+"Bhutan",
+"Botswana",
+"Burundi",
+"Bulgaria",
+"Bahrain",
+"Bolivia (Plurinational State of)",
+"Canada",
+"Cocos (Keeling) Islands",
+"The Democratic Republic of the Congo",
+"Belarus",
+"Belize",
+"Benin",
+"Bermuda",
+"Switzerland",
+"Central African Republic",
+"Cook Islands",
+"Cameroon",
+"China",
+"Colombia",
+"Cyprus",
+"Czechia",
+"Germany",
+"Côte d'Ivoire",
+"Chile",
+"Cabo Verde",
+"Christmas Island",
+"Dominican Republic",
+"Algeria",
+"Ecuador",
+"Estonia",
+"Egypt",
+"Djibouti",
+"Cuba",
+"Costa Rica",
+"Dominica",
+"Ethiopia",
+"Finland",
+"Fiji",
+"Faroe Islands",
+"Western Sahara",
+"Denmark",
+"Spain",
+"Georgia",
+"Ghana",
+"Gibraltar",
+"Greenland",
+"United Kingdom of Great Britain and Northern Ireland",
+"Grenada",
+"France",
+"Gabon",
+"Eritrea",
+"Guatemala",
+"Guam",
+"Guinea-Bissau",
+"Guyana",
+"Guinea",
+"Gambia",
+"Equatorial Guinea",
+"Indonesia",
+"Ireland",
+"Honduras",
+"Croatia",
+"Greece",
+"Haiti",
+"Hungary",
+"Isle of Man",
+"Israel",
+"India",
+"British Indian Ocean Territory",
+"Jordan",
+"Iraq",
+"Iran (Islamic Republic of)",
+"Iceland",
+"Jamaica",
+"Kenya",
+"Japan",
+"Cambodia",
+"Kyrgyzstan",
+"Kiribati",
+"Italy",
+"Jersey",
+"Saint Kitts and Nevis",
+"Cayman Islands",
+"Lao People's Democratic Republic",
+"Comoros",
+"Kuwait",
+"Liberia",
+"Lesotho",
+"Morocco",
+"Lebanon",
+"Kazakhstan",
+"Saint Lucia",
+"Liechtenstein",
+"Sri Lanka",
+"Lithuania",
+"Monaco",
+"Montenegro",
+"Madagascar",
+"Republic of Moldova",
+"Mali",
+"Libya",
+"Luxembourg",
+"Montserrat",
+"Mauritania",
+"Northern Mariana Islands",
+"Mauritius",
+"Mongolia",
+"Malta",
+"Marshall Islands",
+"Myanmar",
+"Malaysia",
+"Mozambique",
+"Maldives",
+"Namibia",
+"Niger",
+"New Caledonia",
+"Malawi",
+"Mexico",
+"Netherlands (Kingdom of the)",
+"Norway",
+"Nepal",
+"Nauru",
+"Niue",
+"Nicaragua",
+"Nigeria",
+"New Zealand",
+"Peru",
+"Papua New Guinea",
+"French Polynesia",
+"Puerto Rico",
+"Philippines",
+"Oman",
+"Panama",
+"Pakistan",
+"Saint Pierre and Miquelon",
+"Rwanda",
+"Palau",
+"Qatar",
+"Portugal",
+"Poland",
+"The Republic of the Sudan",
+"Russian Federation",
+"Saudi Arabia",
+"Solomon Islands",
+"Seychelles",
+"Paraguay",
+"Romania",
+"Serbia",
+"Saint Helena, Ascension and Tristan da Cunha",
+"Slovenia",
+"Sao Tome and Principe",
+"El Salvador",
+"Eswatini",
+"Turks and Caicos Islands",
+"Sierra Leone",
+"Singapore",
+"Sweden",
+"Somalia",
+"Suriname",
+"Senegal",
+"Chad",
+"Slovakia",
+"San Marino",
+"Tuvalu",
+"Tanzania, United Republic",
+"Ukraine",
+"Uganda",
+"Togo",
+"Thailand",
+"Tokelau",
+"Tajikistan",
+"Türkiye",
+"Trinidad and Tobago",
+"United States of America",
+"Turkmenistan",
+"Tonga",
+"Tunisia",
+"British Virgin Islands",
+"The Socialist Republic of Viet Nam",
+"Wallis and Futuna",
+"Vanuatu",
+"Uruguay",
+"Uzbekistan",
+"Venezuela (Bolivarian Republic of)",
+"South Africa",
+"Zambia",
+"Bouvet Island",
+"Zimbabwe",
+"Aland Islands",
+"Yemen",
+"Mayotte",
+"Samoa",
+"Macao",
+"Congo",
+"Falkland Islands [Malvinas]",
+"French Southern and Antarctic Territories",
+"French Guiana",
+"Hong Kong",
+"Brunei Darussalam",
+"The Democratic People's Republic of Korea",
+"Holy See",
+"The Republic of Korea",
+"Latvia",
+"Guadeloupe",
+"Guernsey",
+"Heard Island and McDonald Islands",
+"Norfolk Island",
+"Réunion",
+"Pitcairn",
+"Saint Martin (French part)",
+"North Macedonia",
+"Martinique",
+"The Federated States of Micronesia",
+"South Sudan",
+"Svalbard and Jan Mayen",
+"Syrian Arab Republic",
+"Taiwan (Province of China)",
+"United States Minor Outlying Islands",
+"Saint Barthélemy",
+"Saint Vincent and the Grenadines",
+"South Georgia and the South Sandwich Islands",
+"Curaçao",
+"Bonaire, Sint Eustatius and Saba",
+"Sint Maarten (Dutch part)",
+"State of Palestine",
+"The Virgin Islands of the United States",
+"Timor-Leste"
+]
+
+# New list of region options for Step 1 and Step 3
+region_options = [
+"Africa",
+"Americas",
+"Asia",
+"Europe",
+"Oceania",
+"Eastern Africa",
+"Western Africa",
+"Southern Asia",
+"South-Eastern Asia",
+"Middle Africa",
+"Northern Africa",
+"Southern Africa",
+"Caribbean",
+"Central America",
+"South America",
+"Northern America",
+"Central Asia",
+"Eastern Asia",
+"Western Asia",
+"Eastern Europe",
+"Northern Europe",
+"Southern Europe",
+"Western Europe",
+"Australia and New Zealand",
+"Melanesia",
+"Micronesia",
+"Polynesia",
+"Latin America and the Caribbean",
+"Sub-Saharan Africa",
+"Antarctica"
+]
+
+# New list of funders options
+funder_options = [
+    "United States (USDA, USAID, etc.)",
+    "Gates Foundation",
+    "Germany (FIA, GIZ, etc.)",
+    "World Bank",
+    "Netherlands (NWO, etc.)",
+    "United Kingdom",
+    "EC/EU",
+    "IBRD",
+    "Norway",
+    "Switzerland",
+    "Australia",
+    "Canada",
+    "India",
+    "Sweden",
+    "IFAD",
+    "France",
+    "Ireland",
+    "Belgium",
+    "Global Crop Diversity Trust",
+    "AfDB",
+    "New Zealand (MFAT, etc.)",
+    "Food & Agriculture Organization (FAO)",
+    "Japan",
+    "China",
+    "Korea, Republic",
+    "Cornell University",
+    "Italy",
+    "Nigeria",
+    "Michigan State University",
+    "Others"
+]
 
 if 'Lead contact person' in df.columns:
     contacts = df['Lead contact person'].dropna().unique()
@@ -52,7 +394,7 @@ if 'step' not in st.session_state:
     st.session_state.step = 1
 
 # --- Session State Initialization ---
-# Basic filters (not really used now but kept for reference)
+# Basic filters
 if 'user_name' not in st.session_state:
     st.session_state.user_name = ""
 if 'year_interest' not in st.session_state:
@@ -80,7 +422,7 @@ if 'contact_person_selected' not in st.session_state:
 if 'focus_options' not in st.session_state:
     st.session_state.focus_options = []
 if 'science_program_initiatives' not in st.session_state:
-    st.session_state.science_program_initiatives = ""
+    st.session_state.science_program_initiatives = []
 if 'selected_centers' not in st.session_state:
     st.session_state.selected_centers = []
 if 'selected_countries' not in st.session_state:
@@ -90,7 +432,7 @@ if 'selected_regions' not in st.session_state:
 if 'selected_thematic_areas' not in st.session_state:
     st.session_state.selected_thematic_areas = []
 if 'funder_specification' not in st.session_state:
-    st.session_state.funder_specification = ""
+    st.session_state.funder_specification = []
 if 'fund_type_selection' not in st.session_state:
     st.session_state.fund_type_selection = []
 if 'other_focus_text' not in st.session_state:
@@ -131,20 +473,6 @@ if 'target_clients_selected' not in st.session_state:
     st.session_state.target_clients_selected = "Balanced across target clients"
 if 'sdg_focus' not in st.session_state:
     st.session_state.sdg_focus = "Balanced across SDGs"
-if 'sdg_values' not in st.session_state:
-    st.session_state.sdg_values = {f"SDG {i}": 0 for i in range(1, 18)}
-megatrends_options = {
-    "Demographic trends": "The innovation is expected to address challenges related to population growth, aging, migration, and urbanization.",
-    "Changing consumption patterns": "The innovation is expected to improve access to healthy diets.",
-    "Market concentration in the agri-food system": "The innovation is expected to create opportunities for smallholders in agri-food value chains.",
-    "Climate change": "The innovation is expected to address climate (change) impacts on agriculture and rural livelihoods.",
-    "Environmental degradation": "The innovation is expected to address land and water degradation while promoting sustainable resource use.",
-    "Shifting global health challenges": "The innovation is expected to tackle global health risks and challenges.",
-    "Geopolitical instability": "The innovation is expected to mitigate the effects of conflicts on food security and vulnerable populations.",
-    "Growing inequalities": "The innovation is expected to reduce disparities by improving access to resources for disadvantaged groups.",
-    "Frontier technology and innovation": "The innovation is expected to foster technologies and other types of innovations to transform agri-food systems.",
-    "Other": "The innovation is expected to address problems/offer solutions that are not captured in the above megatrends."
-}
 if 'megatrends_selected' not in st.session_state:
     st.session_state.megatrends_selected = []
 if 'commodities_selected' not in st.session_state:
@@ -187,12 +515,12 @@ def reset_filters():
     st.session_state.collaborators = ""
     st.session_state.contact_person_selected = "All"
     st.session_state.focus_options = []
-    st.session_state.science_program_initiatives = ""
+    st.session_state.science_program_initiatives = []
     st.session_state.selected_centers = []
     st.session_state.selected_countries = []
     st.session_state.selected_regions = []
     st.session_state.selected_thematic_areas = []
-    st.session_state.funder_specification = ""
+    st.session_state.funder_specification = []
     st.session_state.fund_type_selection = []
     st.session_state.other_focus_text = ""
     st.session_state.classification_criteria = []
@@ -263,10 +591,28 @@ if st.session_state.step == 1:
 
     st.session_state.focus_options = selected_foci
 
+    # Multi-select options for Science Program:
+    initiative_options = [
+        "Climate Action",
+        "Multifunctional Landscapes",
+        "Policy Innovations",
+        "Better Diets and Nutrition",
+        "Breeding for Tomorrow",
+        "Sustainable Farming",
+        "Sustainable Animal and Aquatic Foods",
+        "Food Frontiers and Security",
+        "Scaling for Impact",
+        "Gender Equality and Social Inclusion (Accelerator)",
+        "Digital Transformation (Accelerator)",
+        "Capacity Sharing (Accelerator)",
+        "Genebanks"
+    ]
+
     if "Science Program" in st.session_state.focus_options:
-        st.session_state.science_program_initiatives = st.text_input(
-            "Which Initiative(s)/ Program(s)?",
-            value=st.session_state.science_program_initiatives
+        st.session_state.science_program_initiatives = st.multiselect(
+            "Which Initiative(s)/Program(s)?",
+            options=initiative_options,
+            default=st.session_state.science_program_initiatives
         )
 
     if "CGIAR-centre" in st.session_state.focus_options:
@@ -281,33 +627,41 @@ if st.session_state.step == 1:
         with col_country:
             st.session_state.selected_countries = st.multiselect(
                 "Which country/ies?",
-                options=countries,
+                options=country_options,
                 default=st.session_state.selected_countries
             )
         with col_region:
             st.session_state.selected_regions = st.multiselect(
                 "Which region(s)?",
-                options=regions,
+                options=region_options,
                 default=st.session_state.selected_regions
             )
 
     if "Thematic Area" in st.session_state.focus_options:
         st.session_state.selected_thematic_areas = st.multiselect(
             "Which thematic areas?",
-            options=impact_areas,
+            options=thematic_areas_options,
             default=st.session_state.selected_thematic_areas
         )
 
     if "Funder" in st.session_state.focus_options:
-        st.session_state.funder_specification = st.text_input(
+        st.session_state.funder_specification = st.multiselect(
             "Which funders?",
-            value=st.session_state.funder_specification
+            options=funder_options,
+            default=st.session_state.funder_specification
         )
 
     if "Fund-type" in st.session_state.focus_options:
+        # Updated fund-type options as requested:
+        fund_type_options = [
+            "Windows 1 (W1) - Portfolio investments: funding allocated to the entire CGIAR portfolio of approved system-wide investments",
+            "Windows 2 (W2) - Program investments: funding allocated by Funders individually to any component (e.g. Program/ Accelerator/ Platform) of the system-wide portfolio.",
+            "Windows 3 and Bilateral - Project investments: funding allocated by Funders individually [through the Trust Fund] to projects aligned with system-wide investments.",
+            "Bilateral - Project investments: funding allocated by Funders individually to a CGIAR Center to projects."
+        ]
         st.session_state.fund_type_selection = st.multiselect(
             "Select the fund-type:",
-            options=["Pooled", "Non-pooled"],
+            options=fund_type_options,
             default=st.session_state.fund_type_selection
         )
 
@@ -390,16 +744,16 @@ elif st.session_state.step == 3:
         st.write("Geofocus (e.g. regional or specific countries)")
         col_geo1, col_geo2 = st.columns(2)
         with col_geo1:
-            st.session_state.selected_regions_step3 = st.multiselect(
-                "CGIAR regions, specify _______",
-                options=regions,
-                default=st.session_state.selected_regions_step3
-            )
-        with col_geo2:
             st.session_state.selected_countries_step3 = st.multiselect(
                 "Countries, specify __________",
-                options=countries,
+                options=country_options,
                 default=st.session_state.selected_countries_step3
+            )
+        with col_geo2:
+            st.session_state.selected_regions_step3 = st.multiselect(
+                "CGIAR regions, specify _______",
+                options=region_options,
+                default=st.session_state.selected_regions_step3
             )
 
     if "Innovation type (e.g. technology, policy, etc.)" in st.session_state.classification_criteria:
@@ -468,6 +822,8 @@ elif st.session_state.step == 3:
 
         if st.session_state.sdg_focus == "Tailored SDG focus":
             sdg_names = [f"SDG {i}" for i in range(1, 18)]
+            if 'sdg_values' not in st.session_state:
+                st.session_state.sdg_values = {f"SDG {k}": 0 for k in range(1, 18)}
             for i in range(0, 17, 4):
                 cols = st.columns(4)
                 for j, col in enumerate(cols):
@@ -478,6 +834,19 @@ elif st.session_state.step == 3:
                             value=st.session_state.sdg_values[sdg_key],
                             format="%d"
                         )
+
+    megatrends_options = {
+        "Demographic trends": "The innovation is expected to address challenges related to population growth, aging, migration, and urbanization.",
+        "Changing consumption patterns": "The innovation is expected to improve access to healthy diets.",
+        "Market concentration in the agri-food system": "The innovation is expected to create opportunities for smallholders in agri-food value chains.",
+        "Climate change": "The innovation is expected to address climate (change) impacts on agriculture and rural livelihoods.",
+        "Environmental degradation": "The innovation is expected to address land and water degradation while promoting sustainable resource use.",
+        "Shifting global health challenges": "The innovation is expected to tackle global health risks and challenges.",
+        "Geopolitical instability": "The innovation is expected to mitigate the effects of conflicts on food security and vulnerable populations.",
+        "Growing inequalities": "The innovation is expected to reduce disparities by improving access to resources for disadvantaged groups.",
+        "Frontier technology and innovation": "The innovation is expected to foster technologies and other types of innovations to transform agri-food systems.",
+        "Other": "The innovation is expected to address problems/offer solutions that are not captured in the above megatrends."
+    }
 
     if "Megatrends (e.g. demographic trends, consumption patterns, health challenges, climate change, etc.)" in st.session_state.classification_criteria:
         st.write("Megatrends (e.g. demographic trends, consumption patterns, health challenges, climate change, etc.)")
@@ -579,13 +948,12 @@ elif st.session_state.step == 5:
     st.header("Step 5: Summary of Responses")
 
     # Build responses conditionally, only add if they were visible.
-
     responses = {}
 
     # Step 1 always visible
     responses["Focus Options"] = ", ".join(st.session_state.focus_options)
     if "Science Program" in st.session_state.focus_options:
-        responses["Science Program Initiatives"] = st.session_state.science_program_initiatives
+        responses["Science Program Initiatives"] = ", ".join(st.session_state.science_program_initiatives)
     if "CGIAR-centre" in st.session_state.focus_options:
         responses["Selected Centers"] = ", ".join(st.session_state.selected_centers)
     if "Country or Region" in st.session_state.focus_options:
@@ -594,7 +962,7 @@ elif st.session_state.step == 5:
     if "Thematic Area" in st.session_state.focus_options:
         responses["Selected Thematic Areas"] = ", ".join(st.session_state.selected_thematic_areas)
     if "Funder" in st.session_state.focus_options:
-        responses["Funder Specification"] = st.session_state.funder_specification
+        responses["Funder Specification"] = ", ".join(st.session_state.funder_specification)
     if "Fund-type" in st.session_state.focus_options:
         responses["Fund Type Selection"] = ", ".join(st.session_state.fund_type_selection)
     responses["Other Focus Text"] = st.session_state.other_focus_text
@@ -614,8 +982,8 @@ elif st.session_state.step == 5:
             responses["Scaling Ready (%)"] = st.session_state.scaling_ready
 
     if "Geofocus (e.g. regional or specific countries)" in st.session_state.classification_criteria:
-        responses["Selected Regions (Step 3)"] = ", ".join(st.session_state.selected_regions_step3)
         responses["Selected Countries (Step 3)"] = ", ".join(st.session_state.selected_countries_step3)
+        responses["Selected Regions (Step 3)"] = ", ".join(st.session_state.selected_regions_step3)
 
     if "Innovation type (e.g. technology, policy, etc.)" in st.session_state.classification_criteria:
         responses["Innovation Type Focus"] = st.session_state.innovation_type_focus
@@ -649,37 +1017,53 @@ elif st.session_state.step == 5:
     responses["Innovations Considered"] = st.session_state.innovations_considered
     responses["Partner Co-investment Importance"] = st.session_state.partner_co_investment
 
-    # Convert dictionary to DataFrame
-    responses_df = pd.DataFrame(list(responses.items()), columns=["Question", "Response"])
+    if 'show_selection' not in st.session_state:
+        st.session_state.show_selection = False
 
-    st.write("Below is a summary of all your *visible* responses:")
-    st.dataframe(responses_df, width=800, height=600)
+    if st.button("Show selection"):
+        st.session_state.show_selection = True
 
-    def to_excel(df):
-        output = io.BytesIO()
-        with pd.ExcelWriter(output, engine='openpyxl') as writer:
-            df.to_excel(writer, index=False)
-        return output.getvalue()
+    if st.session_state.show_selection:
+        # Display the responses in JSON format
+        st.json(responses)
 
-    def to_csv(df):
-        return df.to_csv(index=False).encode('utf-8')
+        # After showing JSON, display a filtered table from df
+        df_filtered = df.copy()
 
-    st.write("Download your responses:")
-    col_down1, col_down2 = st.columns(2)
-    with col_down1:
-        st.download_button(
-            label="Download Excel",
-            data=to_excel(responses_df),
-            file_name='responses_summary.xlsx',
-            mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-        )
-    with col_down2:
-        st.download_button(
-            label="Download CSV",
-            data=to_csv(responses_df),
-            file_name='responses_summary.csv',
-            mime='text/csv'
-        )
+        # If "CGIAR-centre" was selected, filter df by selected centers (OR filter)
+        if "CGIAR-centre" in st.session_state.focus_options and st.session_state.selected_centers:
+            df_filtered = df_filtered[df_filtered['Primary center'].isin(st.session_state.selected_centers)]
+
+        # Show only first 10 rows
+        st.write("Below is a filtered subset of the data (showing first 10 rows):")
+        st.dataframe(df_filtered.head(10))
+
+        # Provide download options for the entire filtered dataset
+        def to_excel(full_df):
+            output = io.BytesIO()
+            with pd.ExcelWriter(output, engine='openpyxl') as writer:
+                full_df.to_excel(writer, index=False)
+            return output.getvalue()
+
+        def to_csv(full_df):
+            return full_df.to_csv(index=False).encode('utf-8')
+
+        st.write("Download the full filtered dataset:")
+        col_down_full_excel, col_down_full_csv = st.columns(2)
+        with col_down_full_excel:
+            st.download_button(
+                label="Download Full Excel",
+                data=to_excel(df_filtered),
+                file_name='filtered_data.xlsx',
+                mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            )
+        with col_down_full_csv:
+            st.download_button(
+                label="Download Full CSV",
+                data=to_csv(df_filtered),
+                file_name='filtered_data.csv',
+                mime='text/csv'
+            )
 
     col_prev, col_next, col_reset = st.columns([1,1,1])
     with col_prev:
